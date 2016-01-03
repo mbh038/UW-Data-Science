@@ -177,32 +177,45 @@ cur.close()
 
 # open the connection#
 
+import sqlite3
+import operator
 conn = sqlite3.connect('reuters.db')
 cur = conn.cursor()
 
 # add query terms to the corpus
 
-cur.executescript('''
-INSERT OR IGNORE INTO Frequency (docid,term,count) VALUES ('q','washington',1);
-INSERT OR IGNORE INTO Frequency (docid,term,count) VALUES ('q','taxes',1);
-INSERT OR IGNORE INTO Frequency (docid,term,count) VALUES ('q','treasury',1);
-''')
+#cur.executescript('''
+#INSERT OR IGNORE INTO Frequency (docid,term,count) VALUES ('q','washington',1);
+#INSERT OR IGNORE INTO Frequency (docid,term,count) VALUES ('q','taxes',1);
+#INSERT OR IGNORE INTO Frequency (docid,term,count) VALUES ('q','treasury',1);
+#''')
 
-conn.commit()
-
+query=raw_input("Enter query: ")
+print query
+query=query.rstrip()
+queryItems=query.split()
+for item in queryItems:
+    print item
+    cur.execute('INSERT OR IGNORE INTO Frequency (docid,term,count) VALUES ("q",?,1)',(item,))
+        
+# return tuples of (docid, term, count) for whole dbase
 cur.execute('SELECT * FROM Frequency')
 f=cur.fetchall()
-
+print len(f)
+print f[0:10]
+# construct dictionary of query terms
 qdoc={}
 for item in f:
     if item[0] =='q':
         qdoc[item[1]]=qdoc.get(item[1],0)+item[2]
-        
+print qdoc        
+# construct list of unique terms
 docList=[]
 for triple in f:
     if triple[0] not in docList:
         docList.append(triple[0])
 print len(docList)
+
 
 similarity={}
 count=0
@@ -224,6 +237,14 @@ print "part_i= ", mostSimilar
 part_i=open("part_i.txt",'w')
 part_i.write(str(mostSimilar[1]))
 part_i.close()
+
+# remove query from database
+conn = sqlite3.connect('reuters.db')
+cur = conn.cursor()
+cur.execute('''
+DELETE FROM Frequency where docid='q';
+''')
+conn.commit()
 cur.close()
     
     
