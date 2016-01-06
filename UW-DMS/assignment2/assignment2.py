@@ -246,6 +246,29 @@ DELETE FROM Frequency where docid='q';
 ''')
 conn.commit()
 cur.close()
-    
-    
+
+
+
+## Part i v2
+
+import sqlite3
+conn = sqlite3.connect('reuters.db')
+cur = conn.cursor()
+   
+
+cur.execute('''
+SELECT docid,term,SUM(count)
+FROM Frequency as B
+WHERE B.term='washington' OR B.term='taxes' OR B.term='treasury'
+GROUP BY docid,term
+ORDER BY SUM(count) DESC
+''')
+ans_i=cur.fetchone()
+score=ans_i[2]
+print "part_i= ",ans_i[0],": ",ans_i[2]
+part_i=open("part_i.txt",'w')
+part_i.write(str(score))
+part_i.close()
+cur.close()
+
 
