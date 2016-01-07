@@ -2,10 +2,10 @@ import MapReduce
 import sys
 
 """
-Inverted Index in the Simple Python MapReduce Framework
+Join in the Simple Python MapReduce Framework
 """
 #record = open(sys.argv[1])
-# record = open("./data/books.json")
+#record = open("./data/records.json")
     
 mr = MapReduce.MapReduce()
 
@@ -15,27 +15,32 @@ mr = MapReduce.MapReduce()
 def mapper(record):
     # key: document identifier
     # value: document contents
-    key = record[0]
+    recordID = record[1]
+    #print recordID
     #print key
-    value = record[1]
-    words = value.split()
-    for w in words:
-      mr.emit_intermediate(w, key)
+#    recordType = record[0]
+#    for attribute in record:
+    mr.emit_intermediate(recordID, record[0:1])
+    #print mr.emit_intermediate(recordID, record[1])
+    
 
 def reducer(key, list_of_values):
     # key: word
     # value: list of occurrence counts
-    docList=[]
+    joinRecords=[]
+    print list_of_values
+
+
     for v in list_of_values:
-      if v not in docList:
-          docList.append(v)
-    mr.emit((key, docList))
+        #print key,v
+        joinRecords.append(v)
+    mr.emit((key, joinRecords))
 
 # Do not modify below this line
 # =============================
 if __name__ == '__main__':
   #inputdata = open(sys.argv[1])
-  inputdata = open("./data/books.json")
+  inputdata = open("./data/records.json")
 
 
   mr.execute(inputdata, mapper, reducer)
