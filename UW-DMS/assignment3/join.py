@@ -15,12 +15,14 @@ mr = MapReduce.MapReduce()
 def mapper(record):
     # key: document identifier
     # value: document contents
+    key = record[0]
+    value = record[1]
     recordID = record[1]
     #print recordID
     #print key
 #    recordType = record[0]
 #    for attribute in record:
-    mr.emit_intermediate(recordID, record[0:1])
+    mr.emit_intermediate(key, value)
     #print mr.emit_intermediate(recordID, record[1])
     
 
@@ -28,7 +30,7 @@ def reducer(key, list_of_values):
     # key: word
     # value: list of occurrence counts
     joinRecords=[]
-    print list_of_values
+    #print list_of_values
 
 
     for v in list_of_values:
