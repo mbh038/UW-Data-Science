@@ -8,6 +8,7 @@ class MapReduce:
     def emit_intermediate(self, key, value):
         self.intermediate.setdefault(key, [])
         self.intermediate[key].append(value)
+        #print self.intermediate
 
     def emit(self, value):
         self.result.append(value) 
@@ -24,3 +25,4 @@ class MapReduce:
         jenc = json.JSONEncoder()
         for item in self.result:
             print jenc.encode(item)
+            #print
