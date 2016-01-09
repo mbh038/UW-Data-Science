@@ -6,6 +6,8 @@ Matrix Multiplication in the Simple Python MapReduce Framework
 
 """
 
+print "Hello"
+
 ### Multiply.py 
 
 # Part 1
@@ -17,7 +19,7 @@ mr = MapReduce.MapReduce()
 
 # Part 4
 
-#inputdata = open(sys.argv[1])
-inputdata = open("./data/friends.json")
+#inutdata = open(sys.argv[1])
+inputdata = open("./data/matrix.json")
 
 mr.execute(inputdata, mapper, reducer)
