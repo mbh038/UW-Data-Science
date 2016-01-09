@@ -19,6 +19,7 @@ class MapReduce:
             mapper(record)
 
         for key in self.intermediate:
+            #print "Hello!"
             reducer(key, self.intermediate[key])
 
         #jenc = json.JSONEncoder(encoding='latin-1')
