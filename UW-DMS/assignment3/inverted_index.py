@@ -1,4 +1,4 @@
-import MapReduce
+dimport MapReduce
 import sys
 
 """
