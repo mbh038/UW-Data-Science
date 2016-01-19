@@ -85,7 +85,79 @@ sum(PredictCARTmodel==test$pop)/nrow(test)
 # Install randomForest package
 #install.packages("randomForest")
 library(randomForest)
-fol<-formula(pop ~ fsc_small + fsc_perp + fsc_big + pe +chl_small)
+fol<-formula(pop ~ fsc_small + fsc_perp + fsc_big + pe + chl_big + chl_small)
 forestmodel<-randomForest(fol, data=train)
 
 PredictForest = predict(forestmodel, newdata = test)
+sum(PredictForest==test$pop)/nrow(test)
+importance(forestmodel)
+
+## Step 7: Train a support vector machine model and compare results.
+
+# Use the e1071 library and call model <- svm(fol, data=trainingdata).
+library(e1071)
+fol<-formula(pop ~ fsc_small + fsc_perp + fsc_big + pe + chl_big + chl_small)
+SVMmodel <- svm(fol, data=train)
+PredictSVM = predict(SVMmodel, newdata = test)
+sum(PredictSVM==test$pop)/nrow(test)
+
+## Step 8: Construct confusion matrices
+
+# CART
+table(pred = PredictCARTmodel, true = test$pop)
+
+#randomForest
+table(pred = PredictForest, true = test$pop)
+
+# SVM model
+table(pred = PredictSVM, true = test$pop)
+
+## Step 8: Sanity check the data
+plot(sf$time,sf$fsc_small)
+plot(sf$time,sf$fsc_perp)
+plot(sf$time,sf$fsc_big)
+plot(sf$time,sf$pe)
+plot(sf$time,sf$chl_small)
+plot(sf$time,sf$chl_big)
+
+
+## filter out data connected with file_id 208
+sfclean<-sf[ sf$file_id!=208, ]
+table(sfclean$file_id) # check that all file_id 208 removed
+
+# repeat analysis
+
+library(caTools)
+set.seed(1000)
+spl = sample.split(sfclean$time, SplitRatio = 0.5)
+train = subset(sfclean, spl==TRUE)
+test = subset(sfclean, spl==FALSE)
+
+# Decision tree (CART model)
+library(rpart)
+library(rpart)
+library(rpart.plot)
+
+fol<-formula(pop ~ fsc_small + fsc_perp + fsc_big + pe + chl_big + chl_small)
+CARTmodel <- rpart(fol, method="class", data=train)
+print(CARTmodel)
+
+PredictCARTmodel = predict(CARTmodel, newdata = test, type = "class")
+sum(PredictCARTmodel==test$pop)/nrow(test)
+
+
+# Random Forest model
+library(randomForest)
+fol<-formula(pop ~ fsc_small + fsc_perp + fsc_big + pe + chl_big + chl_small)
+forestmodel<-randomForest(fol, data=train)
+
+PredictForest = predict(forestmodel, newdata = test)
+sum(PredictForest==test$pop)/nrow(test)
+importance(forestmodel)
+
+# SVM model
+library(e1071)
+fol<-formula(pop ~ fsc_small + fsc_perp + fsc_big + pe + chl_big + chl_small)
+SVMmodel <- svm(fol, data=train)
+PredictSVM = predict(SVMmodel, newdata = test)
+sum(PredictSVM==test$pop)/nrow(test)
