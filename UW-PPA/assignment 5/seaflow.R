@@ -74,18 +74,18 @@ prp(CARTb)
 
 #accuracy of CART model on test set
 PredictCARTmodel = predict(CARTmodel, newdata = test, type = "class")
-ct<-table(test$pop, PredictCARTb)
+ct<-table(test$pop, PredictCARTmodel)
 ct
 sum(diag(ct))/sum(ct)
 
-sum(PredictCARTb==test$pop)/nrow(test)
+sum(PredictCARTmodel==test$pop)/nrow(test)
 
 ## Step 6: Build and evaluate a random forest.
 
 # Install randomForest package
 #install.packages("randomForest")
 library(randomForest)
-fol<-formula(pop ~ fsc_small + fsc_perp + fsc_big + pe + chl_big + chl_small)
+fol<-formula(pop ~ fsc_small + fsc_perp + fsc_big + pe +chl_small)
 forestmodel<-randomForest(fol, data=train)
 
 PredictForest = predict(forestmodel, newdata = test)
