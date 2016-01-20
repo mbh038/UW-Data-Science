@@ -104,13 +104,18 @@ sum(PredictSVM==test$pop)/nrow(test)
 ## Step 8: Construct confusion matrices
 
 # CART
-table(pred = PredictCARTmodel, true = test$pop)
+t1<-table(pred = PredictCARTmodel, true = test$pop)
+t1
 
 #randomForest
-table(pred = PredictForest, true = test$pop)
+t2<-table(pred = PredictForest, true = test$pop)
+t2
 
 # SVM model
-table(pred = PredictSVM, true = test$pop)
+t3<-table(pred = PredictSVM, true = test$pop)
+t3
+
+t1+t2+t3
 
 ## Step 8: Sanity check the data
 plot(sf$time,sf$fsc_small)
